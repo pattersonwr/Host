@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using ConsoleExtender;
+using Host.Extensions;
 
 namespace Host
 {
@@ -14,54 +15,25 @@ namespace Host
     /// </summary>
     public partial class Program
     {
+        [Category("System")]
         [Description("Shows Help for All Commands or specific commands based on a keyword")]
-        static void System_Help(string keyWord = "")
+        static void Help(string keyWord = "")
         {
             var criteria = GetSearchCriteria(keyWord);
 
-            foreach (MethodInfo m in criteria)
+            foreach (MethodDetails md in criteria)
             {
-                DescriptionAttribute[] attribs = (DescriptionAttribute[])m.GetCustomAttributes(typeof(DescriptionAttribute), false);
-                if (attribs != null && attribs.Length > 0)
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-
-                    if (m.Name.Contains('_'))
-                        Console.Write(m.Name.Split('_')[1]);
-                    else
-                        Console.Write(m.Name);
-
-                    ParameterInfo[] parm = m.GetParameters();
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.Write("(");
-
-                    for (int i = 0; i < parm.Length; i++)
-                    {
-                        if (i > 0)
-                            Console.Write(", ");
-
-                        if (parm[i].HasDefaultValue)
-                            Console.Write("({0}){1}={2}", parm[i].ParameterType.Name, parm[i].Name, parm[i].DefaultValue);
-                        else
-                            Console.Write("({0}){1}", parm[i].ParameterType.Name, parm[i].Name);
-
-                    }
-
-                    Console.Write(")");
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine("\n\t{0}", attribs[0].Description);
-                }
+                md.DisplayHelpText();
             }
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("\nUse 'exit' or 'quit' to leave the application");
             Console.ForegroundColor = ConsoleColor.White;
-
         }
 
-        private static IEnumerable<MethodInfo> GetSearchCriteria(string keyWord)
+        private static IEnumerable<MethodDetails> GetSearchCriteria(string keyWord)
         {
-            var searchCriteria = (keyWord != string.Empty ? m_methods.Where(x => x.Name.ToLower().Contains(keyWord.ToLower())) : m_methods);
+            var searchCriteria =  (keyWord != string.Empty ? _methodDictionary.Values.Where(x => x.Category == keyWord) : _methodDictionary.Values);
 
             if(keyWord == string.Empty)
             {
@@ -70,14 +42,15 @@ namespace Host
 
             else
             {
-                Console.WriteLine("Valid {0} Commands", searchCriteria.ToArray()[0].Name.Split('_')[0]);
+                Console.WriteLine("Valid {0} Commands", searchCriteria.ToArray()[0].Category);
             }
 
             return searchCriteria;
         }
 
+        [Category("System")]
         [Description("Open Application Log Folder")]
-        static void System_OpenLogFolder()
+        static void OpenLogFolder()
         {
             var path = Path.Combine(GetCurrentPath(), "ApplicationLogs");
 
@@ -96,8 +69,9 @@ namespace Host
             return fi.DirectoryName;
         }
 
+        [Category("System")]
         [Description("Get Font Sizes for the Console Window")]
-        static void System_GetFontSizes()
+        static void GetFontSizes()
         {
             var fonts = ConsoleHelper.ConsoleFonts;
 
@@ -105,8 +79,9 @@ namespace Host
                 Console.WriteLine("{0}: X={1}, Y={2}", fonts[f].Index, fonts[f].SizeX, fonts[f].SizeY);
         }
 
+        [Category("System")]
         [Description("Set the Font Size for the Console Window")]
-        static void System_SetFontSize(string size, bool clearBuffer = false)
+        static void SetFontSize(string size, bool clearBuffer = false)
         {
             if (string.IsNullOrEmpty(size))
                 return;
@@ -117,12 +92,13 @@ namespace Host
                 ConsoleHelper.SetConsoleFont(x);
 
                 if (clearBuffer)
-                    System_Clear();
+                    Clear();
             }
         }
 
+        [Category("System")]
         [Description("Clears the Current display Buffer")]
-        static void System_Clear()
+        static void Clear()
         {
             Console.Clear();
         }

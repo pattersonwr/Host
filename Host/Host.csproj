@@ -46,10 +46,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConsoleHelper.cs" />
+    <Compile Include="HostCommand.cs" />
     <Compile Include="HostExtensions.cs" />
-    <Compile Include="Functions\_System.cs" />
-    <Compile Include="Functions\_Test.cs" />
+    <Compile Include="Commands\_System.cs" />
+    <Compile Include="Commands\_Test.cs" />
     <Compile Include="Main Program.cs" />
+    <Compile Include="MethodDetails.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

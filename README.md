@@ -1,7 +1,4 @@
 # Host
-Simple Host Project
-
-Host
 Allows simple and quick debugging of functions/processes
 
 Currently Supported:
