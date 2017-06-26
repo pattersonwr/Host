@@ -102,5 +102,34 @@ namespace Host
         {
             Console.Clear();
         }
+
+        [Category("System")]
+        [Description("List Local Drives")]
+        static void LocalDrives()
+        {
+            string[] drives = Environment.GetLogicalDrives();
+            IEnumerable<string> strs = drives.Select(s => s.Replace(":\\", ""));
+            foreach (String s in strs)
+            {
+                DriveInfo drvi = new DriveInfo(s);
+                if (drvi.DriveType == DriveType.CDRom)
+                    continue;
+                Console.WriteLine("{0}:\\", s);
+            }
+        }
+
+        [Category("System")]
+        [Description("List Available Providers")]
+        static void LocalProviders()
+        {
+            var dt = System.Data.Common.DbProviderFactories.GetFactoryClasses();
+            //	Name Description InvariantName
+            Console.WriteLine("{0} {1}\t {2}\t", "", "Name", "InvariantName");
+            Console.WriteLine("-------------------------------------");
+            foreach (System.Data.DataRow dr in dt.Rows)
+            {
+                Console.WriteLine("{0} {1}\t {2}\t", "", dr["Name"], dr["InvariantName"]);
+            }
+        }
     }
 }
