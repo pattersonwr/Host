@@ -18,14 +18,14 @@ namespace Host
         //	An internal pointer to the current Instance of the class
         //	used to reference Program and avoid using Activator Create Instance Calls
         //	'this' will not work for static method calls
-        protected static Program m_this;
+        protected static Program _this;
         protected static string m_prompt = ":>";
-        protected static Type m_type = typeof(Program);
+        protected static Type _type = typeof(Program);
         protected static Dictionary<string, MethodDetails> _methodDictionary;
 
         internal Program()
         {
-            m_this = this;
+            _this = this;
         }
 
         [STAThread]
@@ -51,7 +51,7 @@ namespace Host
             _methodDictionary = new Dictionary<string, MethodDetails>(StringComparer.OrdinalIgnoreCase);
 
             // Load method info into dictionary
-            var methods = m_type.GetMethods(BindingFlags.Static | BindingFlags.NonPublic).ToList();
+            var methods = _type.GetMethods(BindingFlags.Static | BindingFlags.NonPublic).ToList();
             foreach (var method in methods)
             {
                 _methodDictionary.Add(method.Name, new MethodDetails(method));
@@ -72,7 +72,6 @@ namespace Host
             Console.BackgroundColor = ConsoleColor.Black;
             Console.Clear();
             Console.BufferHeight = 300;
-            Console.BufferWidth = 100;
             Console.SetWindowSize(100, 25);
             Console.Title = "Host";
 
@@ -251,7 +250,7 @@ namespace Host
         {
             try
             {
-                method.Method.Invoke(m_this, paramArray);
+                method.Method.Invoke(_this, paramArray);
             }
             catch (TargetInvocationException ex)
             {
