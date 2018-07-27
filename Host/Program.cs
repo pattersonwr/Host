@@ -174,6 +174,17 @@ namespace Host
 
                 return false;
             }
+            else if(providedCount > requiredCount)
+            {
+                Console.WriteLine("Provided too many arguments. When using a string make sure to wrap it in quotes if it has spaces so it will be treated as a single argument");
+                Console.WriteLine("You provided {0} arguments, there are {1} required arguments, and {2} optional arguments." + Environment.NewLine,
+                    providedCount, requiredCount, optionalCount);
+
+                // Display Help Text for the Method
+                md.DisplayHelpText();
+
+                return false;
+            }
 
             return true;
         }
@@ -210,7 +221,6 @@ namespace Host
                             arguments.Add(arg);
                     }
 
-                    // Reset args
                     args = new List<string>() { string.Join(",", arguments.ToArray()) };
                 }
 

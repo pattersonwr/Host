@@ -33,10 +33,11 @@ namespace Host
 
         private static IEnumerable<MethodDetails> GetSearchCriteria(string keyWord)
         {
-            var searchCriteria =  (keyWord != string.Empty ? _methodDictionary.Values.Where(x => x.Category == keyWord) : _methodDictionary.Values);
+            var searchCriteria = _methodDictionary.Values.Where(x => x.Category.ToLower() == keyWord.ToLower());
 
-            if(keyWord == string.Empty)
+            if (keyWord == string.Empty || searchCriteria.Count() == 0)
             {
+                searchCriteria = _methodDictionary.Values;
                 Console.WriteLine("All Valid Commands");
             }
 
